@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useWalletContext } from "./useWalletContext";
 import { ethers } from "ethers";
 import countContractAbi from "../../contract/counterABI.json";
-
+import usdcContractAbi from "../../contract/usdc-abi.json";
 
 export function useWalletAuth() {
   const {
@@ -19,6 +19,8 @@ export function useWalletAuth() {
     wallet,
     counterContract,
     setCounterContract,
+    usdcContract,
+    setUsdcContract
   } = useWalletContext();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -35,6 +37,7 @@ export function useWalletAuth() {
   function displayError(message: string) {
     setConnectionError(message);
   }
+  const usdcAddress = "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
 
 
   async function connect() {
@@ -71,7 +74,15 @@ export function useWalletAuth() {
         instanceProvider.getSigner()
       );
 
+      const usdcContract = new ethers.Contract(
+        usdcAddress,
+        usdcContractAbi,
+        instanceProvider.getSigner()
+      )
+      
+
       setCounterContract(contract);
+      setUsdcContract(usdcContract);
 
       setIsConnected(true);
       setWallet(instance as any);
@@ -105,5 +116,6 @@ export function useWalletAuth() {
     isConnecting,
     connectionError,
     setConnectionError,
+    usdcContract
   };
 }

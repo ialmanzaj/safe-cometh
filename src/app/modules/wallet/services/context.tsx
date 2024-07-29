@@ -10,6 +10,8 @@ export const WalletContext = createContext<{
   setProvider: Dispatch<SetStateAction<ComethProvider | null>>;
   counterContract: ethers.Contract | null;
   setCounterContract: Dispatch<SetStateAction<any | null>>;
+  usdcContract: ethers.Contract | null;
+  setUsdcContract: Dispatch<SetStateAction<ethers.Contract | null>>;
 }>({
   wallet: null,
   setWallet: () => {},
@@ -17,6 +19,8 @@ export const WalletContext = createContext<{
   setProvider: () => {},
   counterContract: null,
   setCounterContract: () => {},
+  usdcContract: null,
+  setUsdcContract: () => {},
 });
 
 export function WalletProvider({
@@ -28,6 +32,7 @@ export function WalletProvider({
   const [provider, setProvider] = useState<ComethProvider | null>(null);
   const [counterContract, setCounterContract] =
     useState<ethers.Contract | null>(null);
+  const [usdcContract, setUsdcContract] = useState<ethers.Contract | null>(null);
 
   return (
     <WalletContext.Provider
@@ -36,6 +41,8 @@ export function WalletProvider({
         setWallet,
         provider,
         setProvider,
+        usdcContract,
+        setUsdcContract,
         counterContract,
         setCounterContract,
       }}

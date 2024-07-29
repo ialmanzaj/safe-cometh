@@ -10,7 +10,9 @@ import { RelayTransactionResponse, ComethProvider } from "@cometh/connect-sdk";
 import { useWindowSize } from "../lib/ui/hooks/useWindowSize";
 import Confetti from "react-confetti";
 import { Hex } from "viem";
+import { useAccount, useBalance } from "wagmi";
 import { encodeFunctionData, parseAbiItem } from "viem";
+import { toUsdcString } from "../lib/utils/usdc";
 
 interface TransactionProps {
   transactionSuccess: boolean;
@@ -44,7 +46,7 @@ export function Transaction({
   transactionSuccess,
   setTransactionSuccess,
 }: TransactionProps) {
-  const { wallet, counterContract } = useWalletAuth();
+  const { wallet, counterContract, usdcContract } = useWalletAuth();
   const [isTransactionLoading, setIsTransactionLoading] =
     useState<boolean>(false);
   const [isSendLoading, setIsSendLoading] = useState<boolean>(false);
@@ -106,14 +108,19 @@ export function Transaction({
     );
   }
 
+  const refreshBalance = async () => {
+    if (wallet && usdcContract) {
+      const balance = ((await usdcContract.balanceOf(wallet.getAddress())) / 10 ** 6).toString();
+      setNftBalance(Number(balance));
+    }
+  };
+
   useEffect(() => {
     if (wallet) {
-      (async () => {
-        const balance = await counterContract!.counters(wallet.getAddress());
-        setNftBalance(Number(balance));
-      })();
+      refreshBalance();
+
     }
-  }, []);
+  }, [wallet, usdcContract]);
 
   const sendTestTransaction = async () => {
     setTransactionSended(null);
@@ -155,7 +162,6 @@ export function Transaction({
 
       const provider = new ComethProvider(wallet!)
 
-
       const txParams = transferUserOps(wallet.getAddress(),
         "0x02C48c159FDfc1fC18BA0323D67061dE1dEA329F",
         1,
@@ -169,6 +175,8 @@ export function Transaction({
 
       setTransactionResponse(txReceipt);
       setTransactionSuccess(true);
+
+      await refreshBalance();
     } catch (e) {
       console.log("Error:", e);
       setTransactionFailure(true);
@@ -180,16 +188,18 @@ export function Transaction({
   return (
     <main>
       <div className="p-4">
+        <p className="text-center text-3xl">{nftBalance}</p>
         <div className="relative flex items-center gap-x-6 rounded-lg p-4">
-          <TransactionButton
+
+          {/*  <TransactionButton
             sendTestTransaction={sendTestTransaction}
             isTransactionLoading={isTransactionLoading}
-          />
+          /> */}
           <SendButton
             sendTestTransaction={sendUSDC}
             isTransactionLoading={isSendLoading}
           />
-          <p className=" text-gray-600">{nftBalance}</p>
+
         </div>
       </div>
       {transactionSended && !transactionResponse && (

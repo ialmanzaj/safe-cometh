@@ -9,6 +9,8 @@ export function useWalletContext() {
     setProvider,
     counterContract,
     setCounterContract,
+    usdcContract,
+    setUsdcContract
   } = useContext(WalletContext);
   return {
     wallet,
@@ -17,5 +19,7 @@ export function useWalletContext() {
     setProvider,
     counterContract,
     setCounterContract,
+    usdcContract,
+    setUsdcContract
   };
 }
