@@ -85,16 +85,16 @@ export function Transaction({
   }
 
   function SendButton({
-    sendTestTransaction,
+    sendUSDC,
     isTransactionLoading,
   }: {
-    sendTestTransaction: () => Promise<void>;
+    sendUSDC: () => Promise<void>;
     isTransactionLoading: boolean;
   }) {
     return (
       <button
-        className="mt-1 flex h-11 py-2 px-4 gap-2 flex-none items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200"
-        onClick={sendTestTransaction}
+        className="mt-1 flex h-11 py-2 px-8 gap-2 flex-none items-center justify-center  bg-purple-700 hover:bg-purple-800 text-white rounded-2xl"
+        onClick={sendUSDC}
       >
         {isTransactionLoading ? (
           <Icons.spinner className="h-4 w-4 animate-spin" />
@@ -103,7 +103,7 @@ export function Transaction({
             <ArrowRightIcon width={16} height={16} />
           </>
         )}{" "}
-        Send USDC
+        Send money
       </button>
     );
   }
@@ -196,11 +196,12 @@ export function Transaction({
             isTransactionLoading={isTransactionLoading}
           /> */}
           <SendButton
-            sendTestTransaction={sendUSDC}
+            sendUSDC={sendUSDC}
             isTransactionLoading={isSendLoading}
           />
 
         </div>
+        <p className="text-center text-sm">{wallet?.getAddress()}</p>
       </div>
       {transactionSended && !transactionResponse && (
         <Alert
